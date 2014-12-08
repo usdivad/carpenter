@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <script src="lib/jquery.js"></script>
+        <script src="lib/timbre.js"></script>
+        <script src="lib/jsmad.js"></script>
+        <script src="lib/mp3_decode.js"></script>
+        <div id="disp_load">loading...</div>
+        <button id="ctrl_piano"></button>
+        <button id="ctrl_backpiano"></button>
+        <script>
+            //using timbre.js
+            console.log("hi");
+
+            //load the samples
+            var v_backpiano_loop = T("audio", {loop:true}).loadthis("mp3/v_backpiano_loop.mp3", function() {
+                console.log("asdf");
+            });
+            var v_piano_loop = T("audio", {loop:true}).loadthis("mp3/v_piano_loop.mp3");
+
+            //play em both
+            var master_play;
+
+            //promise doesn't work if you use loadthis instead of load
+            // $.when(v_piano_loop, v_backpiano_loop).then(function() {
+            //     v_piano_loop.currentTime = 0;
+            //     v_backpiano_loop.currentTime = 0;
+            //     master_play = T("+", [v_piano_loop, v_backpiano_loop]).play();
+            // });
+
+            // while (!v_backpiano_loop.isLoaded && !v_piano_loop.isLoaded) {
+            //     //do nothin
+            //     //console.log("loading");
+            // }
+
+            //better scheduler, smoother
+            var scheduler = window.setInterval(function() {
+                if (v_backpiano_loop.isLoaded && v_piano_loop.isLoaded) {
+                    console.log("both loaded! playing now");
+                    master_play = T("+", [v_piano_loop, v_backpiano_loop]).play();
+                    window.clearInterval(scheduler);
+
+                    $("#disp_load").text("Loaded!");
+                    $("#ctrl_piano").text("pause piano");
+                    $("#ctrl_backpiano").text("pause backpiano");
+                }
+            })
+            //ctrls
+            $("#ctrl_piano").click(function(){
+                if (v_piano_loop.mul == 1) {
+                    v_piano_loop.mul = 0;
+                    $("#ctrl_piano").text("play piano");
+                }
+                else {
+                    v_piano_loop.mul = 1;
+                    $("#ctrl_piano").text("pause piano");
+                }
+            });
+
+            $("#ctrl_backpiano").click(function(){
+                if (v_backpiano_loop.mul == 1) {
+                    v_backpiano_loop.mul = 0;
+                    $("#ctrl_backpiano").text("play backpiano");
+                }
+                else {
+                    v_backpiano_loop.mul = 1;
+                    $("#ctrl_backpiano").text("pause backpiano");
+                }
+            });
+        </script>
+    </body>
+</html>
