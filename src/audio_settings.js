@@ -16,6 +16,8 @@ var metro = new Metronome(226, 13, function(){
 
     // var sprite = sprite_gtr.slice(1000, 500);
     // sprite.play();
+}, function() {
+    v_piano.pause();
 });
 
 //VERSE

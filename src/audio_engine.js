@@ -15,14 +15,16 @@ function AudioEngine(options) {
     - timesig = time signature
     - function_downbeat = function that is called on beat 1 of the bar
     - function_upbeat = function that is called on every other beat of the bar
+    - function_stop = function that is called when metronome is stopped
 */
 
 //Constructor
-function Metronome(bpm, timesig, function_downbeat, function_upbeat) {
+function Metronome(bpm, timesig, function_downbeat, function_upbeat, function_stop) {
     this.bpm = bpm;
     this.timesig = timesig;
     var function_downbeat = function_downbeat;
     var function_upbeat = function_upbeat;
+    this.function_stop = function_stop;
     this.metro = T("interval", {interval: "BPM " + this.bpm + " L8"}, function(count) {
         if (count % timesig == 0) {
             function_downbeat();
@@ -39,6 +41,8 @@ Metronome.prototype.start = function() {
     this.metro.start();
 }
 Metronome.prototype.stop = function() {
+    var function_stop = this.function_stop;
+    function_stop();
     this.metro.stop();
 }
 
