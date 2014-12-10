@@ -1,5 +1,7 @@
 var metro = new Metronome(240, 13, function(){
-    console.log("beep");
+    console.log("beep!");
+}, function() {
+    console.log("boop.");
 });
 
 //VERSE

@@ -7,15 +7,27 @@ function AudioEngine(options) {
 }
 
 
-function Metronome(bpm, timesig, callback) {
+/*
+    Metronome object.
+
+    Vars:
+    - bpm = beats per minute (tempo)
+    - timesig = time signature
+    - function_downbeat = function that is called on beat 1 of the bar
+    - function_upbeat = function that is called on every other beat of the bar
+*/
+function Metronome(bpm, timesig, function_downbeat, function_upbeat) {
     this.bpm = bpm;
     this.timesig = timesig;
-    this.callback = callback;
+    var function_downbeat = function_downbeat;
+    var function_upbeat = function_upbeat;
     this.metro = T("interval", {interval: "BPM " + this.bpm + " L4"}, function(count) {
-        // var timesig = this.timesig; //bugged
-        var callback = this.callback; //callback still buggy
-        if (count % this.timesig == 0) {
-            callback();
+        if (count % timesig == 0) {
+            function_downbeat();
+            // console.log("zero");
+        }
+        else {
+            function_upbeat();
         }
         console.log(count % timesig);
     });
@@ -33,13 +45,13 @@ Metronome.prototype.stop = function() {
     (the loops themselves exist outside of the LoopMaster object)
 */
 
-//constructor
+//Constructor
 function LoopMaster(loops) {
     this.loops = loops;
     this.master = T("+", loops);
 }
 
-//start and set all loop offsets to 0
+//Start and set all loop offsets to 0
 LoopMaster.prototype.start = function() {
     var all_loaded = true;
     for (var i=0; i<this.loops.length; i++) {
@@ -62,7 +74,7 @@ LoopMaster.prototype.start = function() {
     }
 }
 
-//stop and set all loop offsets to 0
+//Stop and set all loop offsets to 0
 LoopMaster.prototype.stop = function() {
     this.master.pause();
     for (var i=0; i<this.loops.length; i++) {
@@ -75,5 +87,9 @@ LoopMaster.prototype.stop = function() {
 
 
 function to_loop(url) {
-    return T("audio", {loop: true}).loadthis(url);
+    return T("audio", {loop: true}).loadthis(url, function() {
+        console.log("Done loading " + url);
+    }, function() {
+        console.log("Failed to load " + url);
+    });
 }
