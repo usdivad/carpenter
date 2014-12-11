@@ -13,10 +13,14 @@ var metro = new Metronome(bpm, c_timesig, function(){
     // sprite.play();
 
     //NEW looping mechanism
-    // if (v_piano.playbackState == 1) {
-        c_piano.play();
+    // if (c_piano.playbackState == 1) {
+        // c_piano.play();
     // }
-    // v_piano.bang();
+    // c_piano.bang();
+
+    for (var i=0; i<c_arr.length; i++) {
+        c_arr[i].play();
+    }
 
 }, function() {
     console.log("boop.");
@@ -24,13 +28,19 @@ var metro = new Metronome(bpm, c_timesig, function(){
     // var sprite = sprite_gtr.slice(1000, 500);
     // sprite.play();
 }, function() {
-    c_piano.pause();
+    for (var i=0; i<c_arr.length; i++) {
+        c_arr[i].pause();
+    }
 });
 
 //VERSE
-
 var v_piano = new Loop("mp3/v_piano_loop.mp3", "mp3/v_piano_init.mp3");
+
+//CHORUS
 var c_piano = new Loop("mp3/c_piano_loop.mp3", "mp3/c_piano_init.mp3");
+var c_backpiano = new Loop("mp3/c_backpiano_loop.mp3")
+var c_drums = new Loop("mp3/c_drums_loop.mp3")
+var c_arr = [c_piano, c_backpiano, c_drums];
 
 var sprite_gtr = to_audio("mp3/sprite_gtr.mp3");
 

@@ -114,19 +114,35 @@ LoopMaster.prototype.checkAllLoaded = function() {
 
     Either constructed with an init sound + loop or just loop.
     Note that the loop audio may have a tail as well
+
+    Vars:
+    - loop = the looped audio
+    - init = the initial audio (first play)
+    - initPlayed = whether init has been played yet
+    - activated = whether loop is "activated" or not within current cycle (on/off ctrl)
+
+    - mute/unmute is similar to on/off but takes place immediately
 */
 function Loop(loop, init) {
     this.loop = to_audio(loop);
     this.init = 0;
     this.initPlayed = true;
+    this.activated = true;
     // this.loopPlaying = false;
-    if (init !== undefined) {
+    if (init == undefined) {
+        this.init = this.loop;
+    }
+    else {
         this.init = to_audio(init);
         this.initPlayed = false;
     }
 }
 
+//Play/pause
 Loop.prototype.play = function() {
+    if (!this.activated) {
+        return;
+    }
     if (this.initPlayed) {
         //this.init.pause();
         //this.init.currentTime = 0;
@@ -146,10 +162,34 @@ Loop.prototype.pause = function() {
     this.init.pause();
 }
 
+//Reset; prepare for next play session
 Loop.prototype.reset = function() {
     this.loop.currentTime = 0;
     this.init.currentTime = 0;
     this.initPlayed = false;
+    this.on();
+    this.unmute();
+}
+
+//On/off
+Loop.prototype.on = function() {
+    this.activated = true;
+}
+Loop.prototype.off = function() {
+    this.activated = false;
+}
+
+//Volume control
+Loop.prototype.setMul = function(mul) {
+    this.loop.mul = mul;
+    this.init.mul = mul;
+}
+Loop.prototype.mute = function() {
+    this.setMul(0);
+}
+
+Loop.prototype.unmute = function() {
+    this.setMul(1);
 }
 
 /*
