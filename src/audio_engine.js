@@ -21,11 +21,18 @@ function AudioEngine(options) {
 //Constructor
 function Metronome(bpm, timesig, function_downbeat, function_upbeat, function_stop) {
     this.bpm = bpm;
+    this.interval = "BPM" + this.bpm + " L4";
+    // this.bpm = btom(bpm);
+    console.log(this.bpm);
     this.timesig = timesig;
+
+    //functions
     var function_downbeat = function_downbeat;
     var function_upbeat = function_upbeat;
     this.function_stop = function_stop;
-    this.metro = T("interval", {interval: "BPM " + this.bpm + " L8"}, function(count) {
+
+    //metro construct
+    this.metro = T("interval", {interval: this.interval}, function(count) {
         if (count % timesig == 0) {
             function_downbeat();
             // console.log("zero");
@@ -123,4 +130,15 @@ function to_loop(url) {
     }, function() {
         console.log("Failed to load " + url);
     });
+}
+
+
+/**
+    Helper functions
+**/
+
+//BPM to milliseconds
+function btom(bpm) {
+    // return Math.round(((60/bpm)*1000)*100000) / 100000;
+    return (((60/bpm)*1000)*100000) / 100000;
 }

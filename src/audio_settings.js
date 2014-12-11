@@ -1,9 +1,16 @@
-var metro = new Metronome(226, 13, function(){
+//GLOB
+// var bpm = btom(232);
+var bpm = 232;
+var v_timesig = 13 * 4;
+var c_timesig = 24;
+
+
+var metro = new Metronome(bpm, v_timesig, function(){
     console.log("beep!");
 
     //figuring out metronome sync
     var sprite = sprite_gtr.slice(250, 500);
-    sprite.play();
+    // sprite.play();
 
     //NEW looping mechanism
     if (v_piano.playbackState == 1) {
