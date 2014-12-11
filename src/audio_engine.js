@@ -109,6 +109,53 @@ LoopMaster.prototype.checkAllLoaded = function() {
     }
 }
 
+/*
+    Loop object.
+
+    Either constructed with an init sound + loop or just loop.
+    Note that the loop audio may have a tail as well
+*/
+function Loop(loop, init) {
+    this.loop = to_audio(loop);
+    this.init = 0;
+    this.initPlayed = true;
+    this.loopPlaying = false;
+    if (init !== undefined) {
+        this.init = to_audio(init);
+        this.initPlayed = false;
+    }
+}
+
+Loop.prototype.play = function() {
+    if (this.initPlayed) {
+        //this.init.pause();
+        //this.init.currentTime = 0;
+        if (!this.loopPlaying) {
+            this.loop.play();
+            this.loopPlaying = true;
+        }
+        this.loop.bang();
+        console.log("playing loop");
+    }
+    else {
+        this.init.play();
+        //this.init.bang();
+        this.initPlayed = true;
+        console.log("playing init");
+    }
+}
+
+Loop.prototype.pause = function() {
+    this.loop.pause();
+    this.loopPlaying = false;
+    this.init.pause();
+}
+
+Loop.prototype.reset = function() {
+    this.loop.currentTime = 0;
+    this.init.currentTime = 0;
+    this.initPlayed = false;
+}
 
 /*
     Audio wrapping; converts audio from URLs to T("audio") objects
