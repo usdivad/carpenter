@@ -119,7 +119,7 @@ function Loop(loop, init) {
     this.loop = to_audio(loop);
     this.init = 0;
     this.initPlayed = true;
-    this.loopPlaying = false;
+    // this.loopPlaying = false;
     if (init !== undefined) {
         this.init = to_audio(init);
         this.initPlayed = false;
@@ -130,16 +130,12 @@ Loop.prototype.play = function() {
     if (this.initPlayed) {
         //this.init.pause();
         //this.init.currentTime = 0;
-        if (!this.loopPlaying) {
-            this.loop.play();
-            this.loopPlaying = true;
-        }
+        this.loop.play();
         this.loop.bang();
         console.log("playing loop");
     }
     else {
         this.init.play();
-        //this.init.bang();
         this.initPlayed = true;
         console.log("playing init");
     }
@@ -147,7 +143,6 @@ Loop.prototype.play = function() {
 
 Loop.prototype.pause = function() {
     this.loop.pause();
-    this.loopPlaying = false;
     this.init.pause();
 }
 
