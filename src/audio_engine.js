@@ -8,50 +8,74 @@ function AudioEngine(options) {
 
 
 /*
-    Metronome object.
+    Conductor object. A glorified Metronome.
 
     Vars:
     - bpm = beats per minute (tempo)
-    - timesig = time signature
+    - timesig = time signature; currently includes multiple bars, e.g. 4 bars of 13/4 makes a timesig of 13*4=52
+    - players = an array of loops
     - function_downbeat = function that is called on beat 1 of the bar
     - function_upbeat = function that is called on every other beat of the bar
     - function_stop = function that is called when metronome is stopped
 */
 
 //Constructor
-function Metronome(bpm, timesig, function_downbeat, function_upbeat, function_stop) {
+function Conductor(bpm, timesig, players, function_beat, function_stop) {
     this.bpm = bpm;
     this.interval = "BPM" + this.bpm + " L4";
-    // this.bpm = btom(bpm);
     console.log(this.bpm);
-    this.timesig = timesig;
+    this.players = players;
+
+    this.newSection = false;
 
     //functions
-    var function_downbeat = function_downbeat;
-    var function_upbeat = function_upbeat;
     this.function_stop = function_stop;
 
     //metro construct
+    var function_beat = function_beat;
+    var timesig = timesig;
     this.metro = T("interval", {interval: this.interval}, function(count) {
-        if (count % timesig == 0) {
-            function_downbeat();
-            // console.log("zero");
-        }
-        else {
-            function_upbeat();
-        }
+        function_beat(count);
         console.log(count % timesig);
     });
 }
 
-Metronome.prototype.start = function() {
+Conductor.prototype.start = function() {
     this.metro.start();
 }
-Metronome.prototype.stop = function() {
+Conductor.prototype.stop = function() {
     var function_stop = this.function_stop;
     function_stop();
     this.metro.stop();
 }
+
+Conductor.prototype.setTimesig = function(timesig) {
+
+}
+
+// Conductor.prototype.setFunctionDownbeat = function(fn) {
+//     this.function_downbeat = fn;
+
+//     var function_downbeat = this.function_downbeat;
+//     var function_upbeat = this.function_upbeat;
+//     var function_stop = this.function_stop;
+//     var timesig = this.timesig;
+
+//     console.log("resetting metro");
+//     function_stop();
+//     this.metro.stop();
+//     this.metro = T("interval", {interval: this.interval}, function(count) {
+//         if (count % timesig == 0) {
+//             function_downbeat();
+//             // console.log("zero");
+//         }
+//         else {
+//             function_upbeat();
+//         }
+//         console.log(count % timesig);
+//     });
+//     this.metro.start();
+// }
 
 /*
     LoopMaster object handles synchronization of loops for a section
@@ -128,13 +152,16 @@ function Loop(loop, init) {
     this.init = 0;
     this.initPlayed = true;
     this.activated = true;
+    this.url_loop = loop;
     // this.loopPlaying = false;
     if (init == undefined) {
         this.init = this.loop;
+        this.url_init = loop;
     }
     else {
         this.init = to_audio(init);
         this.initPlayed = false;
+        this.url_init = init;
     }
 }
 
@@ -148,18 +175,20 @@ Loop.prototype.play = function() {
         //this.init.currentTime = 0;
         this.loop.play();
         this.loop.bang();
-        console.log("playing loop");
+        console.log("playing loop: " + this.url_loop);
     }
     else {
         this.init.play();
+        this.init.bang();
         this.initPlayed = true;
-        console.log("playing init");
+        console.log("playing init: " + this.url_init);
     }
 }
 
 Loop.prototype.pause = function() {
     this.loop.pause();
     this.init.pause();
+    this.initPlayed = false;
 }
 
 //Reset; prepare for next play session
