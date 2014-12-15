@@ -25,7 +25,7 @@ var loop_timesig = v_timesig;
 var conductor = new Conductor(bpm, loop_timesig, c_arr, function(count) {
     if (count % loop_timesig == 0) {
         pauseLoops(loop_arr);
-        playLoops(loop_arr);
+        // playLoops(loop_arr);
     }
     else {
         console.log("boop.");
@@ -33,9 +33,13 @@ var conductor = new Conductor(bpm, loop_timesig, c_arr, function(count) {
     //console.log(count % loop_timesig);
 }, function() {
     pauseLoops(loop_arr);
+}, function() {
+    toChorus();
 });
 
 function toChorus() {
+    // pauseLoops(loop_arr);
+    conductor.toNextSection = true;
     loop_arr = c_arr;
     loop_timesig = c_timesig;
 }

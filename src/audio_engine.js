@@ -20,23 +20,33 @@ function AudioEngine(options) {
 */
 
 //Constructor
-function Conductor(bpm, timesig, players, function_beat, function_stop) {
+function Conductor(bpm, timesig, players, function_downbeat, function_upbeat, function_stop) {
+    var conductor = this;
     this.bpm = bpm;
+    this.timesig = timesig;
     this.interval = "BPM" + this.bpm + " L4";
     console.log(this.bpm);
     this.players = players;
 
-    this.newSection = false;
+    this.toNextSection = false;
 
     //functions
     this.function_stop = function_stop;
+    this.function_downbeat = function_downbeat;
+    this.function_upbeat = function_upbeat;
 
-    //metro construct
-    var function_beat = function_beat;
-    var timesig = timesig;
-    this.metro = T("interval", {interval: this.interval}, function(count) {
-        function_beat(count);
-        console.log(count % timesig);
+    //metro construct (use "conductor" not "this" to point at Conductor)
+    this.metro = T("interval", {interval: conductor.interval}, function(count) {
+        var beat = count % conductor.timesig;
+        if (beat == 0) {
+            conductor.function_downbeat();
+            console.log("beep");
+        }
+        else {
+            conductor.function_upbeat();
+            console.log("boop");
+        }
+        console.log(beat);
     });
 }
 
