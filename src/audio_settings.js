@@ -22,24 +22,19 @@ var sprite_gtr = to_audio("mp3/sprite_gtr.mp3");
 //Conductor settings
 var loop_arr = v_arr;
 var loop_timesig = v_timesig;
-var conductor = new Conductor(bpm, loop_timesig, c_arr, function(count) {
-    if (count % loop_timesig == 0) {
-        pauseLoops(loop_arr);
-        // playLoops(loop_arr);
-    }
-    else {
-        console.log("boop.");
-    }
-    //console.log(count % loop_timesig);
-}, function() {
+var conductor = new Conductor(bpm, loop_timesig, loop_arr, function() {
     pauseLoops(loop_arr);
+    // playLoops(loop_arr);
 }, function() {
-    toChorus();
+    console.log("boop");
+}, function() {
+    console.log("PAUSE");
+    pauseLoops(loop_arr);
 });
 
 function toChorus() {
     // pauseLoops(loop_arr);
-    conductor.toNextSection = true;
+    // conductor.toNextSection = true;
     loop_arr = c_arr;
     loop_timesig = c_timesig;
 }

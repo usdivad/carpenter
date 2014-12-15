@@ -28,7 +28,7 @@ function Conductor(bpm, timesig, players, function_downbeat, function_upbeat, fu
     console.log(this.bpm);
     this.players = players;
 
-    this.toNextSection = false;
+    // this.toNextSection = false;
 
     //functions
     this.function_stop = function_stop;
@@ -36,15 +36,17 @@ function Conductor(bpm, timesig, players, function_downbeat, function_upbeat, fu
     this.function_upbeat = function_upbeat;
 
     //metro construct (use "conductor" not "this" to point at Conductor)
+    var timesig = this.timesig;
     this.metro = T("interval", {interval: conductor.interval}, function(count) {
-        var beat = count % conductor.timesig;
+        var beat = count % timesig;
         if (beat == 0) {
+            timesig = conductor.timesig;
             conductor.function_downbeat();
-            console.log("beep");
+            // console.log("beep");
         }
         else {
             conductor.function_upbeat();
-            console.log("boop");
+            // console.log("boop");
         }
         console.log(beat);
     });
@@ -54,8 +56,7 @@ Conductor.prototype.start = function() {
     this.metro.start();
 }
 Conductor.prototype.stop = function() {
-    var function_stop = this.function_stop;
-    function_stop();
+    this.function_stop();
     this.metro.stop();
 }
 
