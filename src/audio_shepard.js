@@ -22,6 +22,9 @@ var oscillators = [osc55, osc110, osc220, osc440, osc880, osc1760, osc3520];
 // //Timer to prevent pops? it's at least a little better I think...
 // var timer = T("interval", {interval: TIMER_INTERVAL}, function() {
 //     setOscs();
+//     if (playing) {
+//         playAll(oscillators);
+//     }
 // }).start();
 
 //Control
@@ -46,15 +49,32 @@ $("body").keydown(function(event) {
 
 });
 
-$("#button_up").on("click", function() {
+var buttonInterval;
+$("#button_up").on("mousedown", function() {
+    clearInterval(buttonInterval); //in case mouseup doesn't register
     stepForward();
     setOscs();
     playAll(oscillators);
+    buttonInterval = setInterval(function() {
+        stepForward();
+        setOscs();
+        playAll(oscillators);
+    }, 100);
+}).on("mouseup", function() {
+    clearInterval(buttonInterval);
 });
-$("#button_down").on("click", function() {
+$("#button_down").on("mousedown", function() {
+    clearInterval(buttonInterval);
     stepBackward();
     setOscs();
     playAll(oscillators);
+    buttonInterval = setInterval(function() {
+        stepBackward();
+        setOscs();
+        playAll(oscillators);
+    }, 100);
+}).on("mouseup", function() {
+    clearInterval(buttonInterval);
 });
 
 function stepForward() {
