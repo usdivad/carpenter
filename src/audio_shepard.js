@@ -2,7 +2,7 @@
 
 //Constants and ctrl vars
 var STEP_MAX = 100;
-var STEP_INCREMENT = 2;
+var STEP_INCREMENT = 2.5;
 var OSC_MUL = 0.25;
 var TIMER_INTERVAL = 55;
 var curStep = 0;
@@ -19,7 +19,7 @@ var osc3520 = new ShepardOsc(3520, "top");
 var oscillators = [osc55, osc110, osc220, osc440, osc880, osc1760, osc3520];
 
 
-//Timer to prevent pops? it's at least a little better I think...
+// //Timer to prevent pops? it's at least a little better I think...
 // var timer = T("interval", {interval: TIMER_INTERVAL}, function() {
 //     setOscs();
 // }).start();
@@ -32,32 +32,48 @@ $("body").keydown(function(event) {
 
     //up/down
     if (keycode == KEY_UPARROW) {
-        if (curStep < STEP_MAX) {
-            curStep += STEP_INCREMENT;
-        }
-        else {
-            curStep = 0 + STEP_INCREMENT;
-        }
+        stepForward();
     }
     else if (keycode == KEY_DOWNARROW) {
-        if (curStep > 0) {
-            curStep -= STEP_INCREMENT;
-        }
-        else {
-            curStep = STEP_MAX - STEP_INCREMENT;
-        }
+        stepBackward();
+    }
+    else {
+        return;
     }
 
     setOscs();
+    playAll(oscillators);
 
 });
 
-$("#button_play").on("click", function() {
+$("#button_up").on("click", function() {
+    stepForward();
+    setOscs();
     playAll(oscillators);
 });
-$("#button_pause").on("click", function() {
-    pauseAll(oscillators);
+$("#button_down").on("click", function() {
+    stepBackward();
+    setOscs();
+    playAll(oscillators);
 });
+
+function stepForward() {
+    if (curStep < STEP_MAX) {
+        curStep += STEP_INCREMENT;
+    }
+    else {
+        curStep = 0 + STEP_INCREMENT;
+    }
+}
+
+function stepBackward() {
+    if (curStep > 0) {
+        curStep -= STEP_INCREMENT;
+    }
+    else {
+        curStep = STEP_MAX - STEP_INCREMENT;
+    }
+}
 
 //Set oscillator frequencies and amplitudes based on current step
 function setOscs() {
@@ -81,13 +97,17 @@ function setOscs() {
     ShepardOsc object (wraps a T("osc"))
 **/
 function ShepardOsc(base_freq, fade) {
-    this.osc = T("osc", {wave: "sin", freq: base_freq, mul: OSC_MUL});
+    this.osc = T("osc", {wave: "fami", freq: base_freq, mul: OSC_MUL});
+    this.env = T("env", {table: [OSC_MUL, [0, 1000]]}, this.osc).on("ended", function() {
+        this.pause();
+    }).bang();
     this.base_freq = base_freq;
     this.fade = fade;
 }
 
 ShepardOsc.prototype.play = function() {
-    this.osc.play();
+    this.env.play();
+    this.env.bang();
 }
 
 ShepardOsc.prototype.pause = function() {
