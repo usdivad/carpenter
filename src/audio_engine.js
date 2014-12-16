@@ -17,13 +17,16 @@
 function Conductor(bpm, timesig, players, function_downbeat, function_upbeat, function_stop) {
     var conductor = this;
     this.bpm = bpm;
-    this.timesig = timesig;
     this.interval = "BPM" + this.bpm + " L4";
-    console.log(this.bpm);
+    this.timesig = timesig;
     this.players = players;
+    console.log(this.bpm);
+    
     this.toNext = false;
-    this.nextPlayers = players;
-    this.nextTimesig = timesig;
+    this.nextBpm = this.bpm
+    this.nextInterval = this.interval;
+    this.nextTimesig = this.timesig;
+    this.nextPlayers = this.players;
 
     // this.toNextSection = false;
 
@@ -38,15 +41,21 @@ function Conductor(bpm, timesig, players, function_downbeat, function_upbeat, fu
         var beat = count % conductor.timesig;
         if (beat == 0) {
             if (conductor.toNext) {
+                //stop current
                 conductor.pausePlayers();
-                conductor.players = conductor.nextPlayers;
+
+                //set next
+                conductor.bpm = conductor.nextBpm;
+                conductor.interval = "BPM" + conductor.bpm + " L4";
                 conductor.timesig = conductor.nextTimesig;
+                conductor.players = conductor.nextPlayers;
+
+                //reset globs
                 conductor.metro.count = 0; //hacky
                 conductor.toNext = false;
                 console.log("transitioned toNext");
             }
             conductor.playPlayers();
-            // timesig = conductor.timesig;
             conductor.function_downbeat();
             // console.log("beep");
         }
@@ -59,11 +68,13 @@ function Conductor(bpm, timesig, players, function_downbeat, function_upbeat, fu
 }
 
 Conductor.prototype.start = function() {
+    this.startPlayers();
     this.metro.start();
 }
 Conductor.prototype.stop = function() {
-    this.function_stop();
+    this.pausePLayers();
     this.metro.stop();
+    this.function_stop();
 }
 
 Conductor.prototype.playPlayers = function() {

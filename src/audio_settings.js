@@ -35,13 +35,19 @@ var conductor = new Conductor(bpm, loop_timesig, loop_arr, function() {
 function toChorus() {
     // pauseLoops(loop_arr);
     // conductor.toNextSection = true;
-    loop_arr = c_arr;
+    // loop_arr = c_arr;
     // loop_timesig = c_timesig;
     conductor.nextPlayers = c_arr;
     conductor.nextTimesig = c_timesig;
     conductor.toNext = true;
     // playLoops(loop_arr);
 
+}
+
+function toVerse() {
+    conductor.nextPlayers = v_arr;
+    conductor.nextTimesig = v_timesig;
+    conductor.toNext = true;
 }
 
 function playLoops(loop_arr) {
