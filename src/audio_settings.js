@@ -23,7 +23,7 @@ var sprite_gtr = to_audio("mp3/sprite_gtr.mp3");
 var loop_arr = v_arr;
 var loop_timesig = v_timesig;
 var conductor = new Conductor(bpm, loop_timesig, loop_arr, function() {
-    pauseLoops(loop_arr);
+    // pauseLoops(loop_arr);
     // playLoops(loop_arr);
 }, function() {
     console.log("boop");
@@ -36,7 +36,12 @@ function toChorus() {
     // pauseLoops(loop_arr);
     // conductor.toNextSection = true;
     loop_arr = c_arr;
-    loop_timesig = c_timesig;
+    // loop_timesig = c_timesig;
+    conductor.nextPlayers = c_arr;
+    conductor.nextTimesig = c_timesig;
+    conductor.toNext = true;
+    // playLoops(loop_arr);
+
 }
 
 function playLoops(loop_arr) {

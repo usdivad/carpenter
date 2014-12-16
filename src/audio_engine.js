@@ -1,11 +1,5 @@
 //encapsulate it all in a fn later
-function AudioEngine(options) {
-    // this.vars = {
-    //     'loops': [],
-    //     'pads': []
-    // }
-}
-
+// var AudioEngine = {
 
 /*
     Conductor object. A glorified Metronome.
@@ -27,6 +21,9 @@ function Conductor(bpm, timesig, players, function_downbeat, function_upbeat, fu
     this.interval = "BPM" + this.bpm + " L4";
     console.log(this.bpm);
     this.players = players;
+    this.toNext = false;
+    this.nextPlayers = players;
+    this.nextTimesig = timesig;
 
     // this.toNextSection = false;
 
@@ -36,11 +33,20 @@ function Conductor(bpm, timesig, players, function_downbeat, function_upbeat, fu
     this.function_upbeat = function_upbeat;
 
     //metro construct (use "conductor" not "this" to point at Conductor)
-    var timesig = this.timesig;
+    // var timesig = this.timesig;
     this.metro = T("interval", {interval: conductor.interval}, function(count) {
-        var beat = count % timesig;
+        var beat = count % conductor.timesig;
         if (beat == 0) {
-            timesig = conductor.timesig;
+            if (conductor.toNext) {
+                conductor.pausePlayers();
+                conductor.players = conductor.nextPlayers;
+                conductor.timesig = conductor.nextTimesig;
+                conductor.metro.count = 0; //hacky
+                conductor.toNext = false;
+                console.log("transitioned toNext");
+            }
+            conductor.playPlayers();
+            // timesig = conductor.timesig;
             conductor.function_downbeat();
             // console.log("beep");
         }
@@ -58,6 +64,18 @@ Conductor.prototype.start = function() {
 Conductor.prototype.stop = function() {
     this.function_stop();
     this.metro.stop();
+}
+
+Conductor.prototype.playPlayers = function() {
+    for (var i=0; i<this.players.length; i++) {
+        this.players[i].play();
+    }
+}
+
+Conductor.prototype.pausePlayers = function() {
+    for (var i=0; i<this.players.length; i++) {
+        this.players[i].pause();
+    }
 }
 
 Conductor.prototype.setTimesig = function(timesig) {
