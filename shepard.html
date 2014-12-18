@@ -4,11 +4,33 @@
     <meta name="description" content="Use up and down arrows (or the buttons below) to move along the endless staircase.">
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"> 
     <head>
+        <style>
+            /*.butt {
+                color:white;
+                background-color:black;
+                width: 100px;
+                height: 100px;
+            }*/
+            #button_up {
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 0 75px 75px 75px;
+                border-color: transparent transparent #000000 transparent;
+            }
+            #button_down {
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 75px 75px 0 75px;
+                border-color: #000000 transparent transparent transparent;
+            }
+        </style>
     </head>
     <body>
         Interactive Shepard scale!<br>
         Use up and down arrows (or the buttons below) to move along the endless staircase.<br><br>
-        <button id="button_up">^ up</button><br><button id="button_down">v down</button>
+        <div id="button_up" class="butt"></div><br><div id="button_down" class="butt"></div>
         <script src="lib/jquery.js"></script>
         <script src="lib/timbre.js"></script>
         <script src="src/audio_shepard.js"></script>

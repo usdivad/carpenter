@@ -27,7 +27,7 @@ var oscillators = [osc55, osc110, osc220, osc440, osc880, osc1760, osc3520];
 //     }
 // }).start();
 
-//Control
+//Control keys
 var KEY_UPARROW = 38;
 var KEY_DOWNARROW = 40;
 $("body").keydown(function(event) {
@@ -36,9 +36,11 @@ $("body").keydown(function(event) {
     //up/down
     if (keycode == KEY_UPARROW) {
         stepForward();
+        $("#button_up").css("border-color", "transparent transparent #FF8C00 transparent");
     }
     else if (keycode == KEY_DOWNARROW) {
         stepBackward();
+        $("#button_down").css("border-color", "#FF8C00 transparent transparent transparent");
     }
     else {
         return;
@@ -47,8 +49,13 @@ $("body").keydown(function(event) {
     setOscs();
     playAll(oscillators);
 
+}).keyup(function() {
+    $("#button_up").css("border-color", "transparent transparent #000000 transparent");
+    $("#button_down").css("border-color", "#000000 transparent transparent transparent");
+
 });
 
+//Control buttons
 var buttonInterval;
 $("#button_up").on("mousedown", function() {
     clearInterval(buttonInterval); //in case mouseup doesn't register
@@ -60,9 +67,12 @@ $("#button_up").on("mousedown", function() {
         setOscs();
         playAll(oscillators);
     }, 100);
+    $(this).css("border-color", "transparent transparent #FF8C00 transparent");
 }).on("mouseup", function() {
     clearInterval(buttonInterval);
+    $(this).css("border-color", "transparent transparent #000000 transparent");
 });
+
 $("#button_down").on("mousedown", function() {
     clearInterval(buttonInterval);
     stepBackward();
@@ -73,8 +83,10 @@ $("#button_down").on("mousedown", function() {
         setOscs();
         playAll(oscillators);
     }, 100);
+    $(this).css("border-color", "#FF8C00 transparent transparent transparent");
 }).on("mouseup", function() {
     clearInterval(buttonInterval);
+    $(this).css("border-color", "#000000 transparent transparent transparent");
 });
 
 function stepForward() {
