@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
     <title>Interactive Shepard scale!</title>
-    <meta name="description" content="Use up and down arrows (or the buttons below) to move along the endless staircase.">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"> 
+    <meta name="description" content="Use up and down arrows (or the buttons below) to move along the endless staircase."/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+    <meta property="og:title" content="Interactive Shepard scale!"/>
+    <meta property="og:description" content="Use up and down arrows (or the buttons below) to move along the endless staircase."/> 
     <head>
         <style>
             /*.butt {
@@ -25,12 +27,22 @@
                 border-width: 75px 75px 0 75px;
                 border-color: #000000 transparent transparent transparent;
             }
+            #button_up, #button_down {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
         </style>
     </head>
     <body>
         Interactive Shepard scale!<br>
         Use up and down arrows (or the buttons below) to move along the endless staircase.<br><br>
+        <div>
         <div id="button_up" class="butt"></div><br><div id="button_down" class="butt"></div>
+        </div>
         <script src="lib/jquery.js"></script>
         <script src="lib/timbre.js"></script>
         <script src="src/audio_shepard.js"></script>

@@ -55,9 +55,14 @@ $("body").keydown(function(event) {
 
 });
 
+//prevent scrolling
+document.body.addEventListener("touchmove", function(e) {
+    e.preventDefault();
+});
+
 //Control buttons
 var buttonInterval;
-$("#button_up").on("mousedown", function() {
+$("#button_up").on("touchstart mousedown", function() {
     clearInterval(buttonInterval); //in case mouseup doesn't register
     stepForward();
     setOscs();
@@ -68,12 +73,12 @@ $("#button_up").on("mousedown", function() {
         playAll(oscillators);
     }, 100);
     $(this).css("border-color", "transparent transparent #FF8C00 transparent");
-}).on("mouseup", function() {
+}).on("touchend mouseup", function() {
     clearInterval(buttonInterval);
     $(this).css("border-color", "transparent transparent #000000 transparent");
 });
 
-$("#button_down").on("mousedown", function() {
+$("#button_down").on("touchstart mousedown", function() {
     clearInterval(buttonInterval);
     stepBackward();
     setOscs();
@@ -84,7 +89,7 @@ $("#button_down").on("mousedown", function() {
         playAll(oscillators);
     }, 100);
     $(this).css("border-color", "#FF8C00 transparent transparent transparent");
-}).on("mouseup", function() {
+}).on("touchend mouseup", function() {
     clearInterval(buttonInterval);
     $(this).css("border-color", "#000000 transparent transparent transparent");
 });
