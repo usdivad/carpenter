@@ -1,4 +1,6 @@
+from time import time
 import wave
+kaishi = time()
 
 wav1 = wave.open('../wav/sprite_gtr_whole.wav', 'r')
 
@@ -10,25 +12,37 @@ middle2: sub-wave starting in middle of file
 wav2 = wave.open('../wav/sprite_gtr_middle1.wav', 'r')
 
 #gives a similarity score
-SIMILARITY_THRESHOLD = 0.5
+SIMILARITY_THRESHOLD = 0.4999
 def similarity_wav(w1, w2):
     w1.rewind()
     w2.rewind()
     length = min(w1.getnframes(), w2.getnframes())
     total = 0.
 
-    # #trying to find a starting point for subsequence
-    # needle = w1
-    # haystack = w2
-    # if w1.getnframes() > w2.getnframes():
-    #     needle = w2
-    #     haystack = w1
+    #trying to find a starting point for subsequence
+    needle = w1
+    haystack = w2
+    if w1.getnframes() > w2.getnframes():
+        needle = w2
+        haystack = w1
 
-    # starting_points = []
-    # needle_start = 
-    # for i in xrange(haystack.getnframes()):
+    starting_points = []
+    needle_start = needle.readframes(1)
+    needle_second = needle.readframes(1)
+    needle_length = needle.getnframes()
+    haystack_length = haystack.getnframes()
+    for i in xrange(haystack_length):
+        if haystack_length - i < needle_length:
+            break
 
+        if similarity_frame(haystack.readframes(1), needle_start) > SIMILARITY_THRESHOLD:
+            if similarity_frame(haystack.readframes(1), needle_second) > SIMILARITY_THRESHOLD:
+                starting_points.append(haystack.tell())
 
+    print str(len(starting_points)) + ' potential starting points'
+
+    w1.rewind()
+    w2.rewind()
     for i in xrange(length):
         f1 = w1.readframes(1)
         f2 = w2.readframes(1)
@@ -39,7 +53,7 @@ def similarity_wav(w1, w2):
         # total += sf
 
         # # Approach 2: add 1 if above similarity threshold
-        if sf >= SIMILARITY_THRESHOLD:
+        if sf > SIMILARITY_THRESHOLD:
             total += 1
 
     return total / length
@@ -60,7 +74,7 @@ def dot_product(v1, v2):
     return total
 
 #see if one wave contains another
-ACCURACY_THRESHOLD = 0.55
+CONTAIN_THRESHOLD = 0.55
 def contains(w1, w2):
     needle = w1
     haystack = w2
@@ -71,9 +85,9 @@ def contains(w1, w2):
     print 'needle: ' + str(needle.getnframes())
     print 'haystack: ' + str(haystack.getnframes())
 
-    d = similarity_wav(needle, haystack)
-    print 'd is ' + str(d)
-    if d > ACCURACY_THRESHOLD:
+    similarity = similarity_wav(needle, haystack)
+    print 'similarity is ' + str(similarity)
+    if similarity > CONTAIN_THRESHOLD:
         return True
     else:
         return False
@@ -81,6 +95,8 @@ def contains(w1, w2):
 print contains(wav2, wav1)
 
 
+jiesu = time()
+print('runtime: %g seconds' % (jiesu-kaishi))
 
 # better to check each sample and output dots of those?
 # OR just do a similarity on the whole "string"
